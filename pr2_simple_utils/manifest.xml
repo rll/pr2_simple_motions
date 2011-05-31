@@ -1,0 +1,17 @@
+<package>
+  <description brief="pr2_simple_utils">
+
+     pr2_simple_utils
+
+  </description>
+  <author>Stephen Miller</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/pr2_simple_utils</url>
+  <depend package="rospy" />
+  <depend package="tf" />
+  <depend package="geometry_msgs" />
+
+</package>
+
+

@@ -1,0 +1,6 @@
+string name
+string frame
+string arms
+bool include_torso
+bool include_head
+---

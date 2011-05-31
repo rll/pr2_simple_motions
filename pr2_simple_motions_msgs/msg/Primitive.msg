@@ -1,0 +1,1 @@
+WeightPoint[] weight_points

@@ -1,0 +1,5 @@
+string arm
+string frame
+---
+pr2_simple_motions_msgs/GripTarget target
+

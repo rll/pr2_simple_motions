@@ -1,0 +1,40 @@
+<package>
+  <description brief="pr2_simple_arm_motions">
+
+     pr2_simple_arm_motions
+
+  </description>
+  <author>Stephen Miller</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/pr2_simple_arm_motions</url>
+  <depend package="rospy"/>
+  <depend package="actionlib"/>
+  <depend package="geometry_msgs"/>
+  <depend package="tf"/>
+  <depend package="pr2_common_action_msgs"/>
+  <depend package="pr2_controllers_msgs"/>
+  <depend package="pr2_simple_motions_msgs"/>
+  <depend package="pr2_simple_motions_srvs"/>
+  <depend package="pr2_arm_move_ik"/>
+  <depend package="joint_states_listener"/>
+  <depend package="joint_trajectory_generator"/>
+  <depend package="std_srvs"/>
+  <depend package="smach"/>
+  <depend package="smach_ros"/>
+  <depend package="opencv2"/>
+  <depend package="pr2_arm_move_ik_synced"/>
+  <depend package="urdf"/>
+  <depend package="sensor_msgs"/>
+  <depend package="kdl"/>
+  <depend package="roscpp"/>
+  <depend package="pr2_arm_kinematics"/>
+  <depend package="pr2_controllers_msgs"/>
+
+  <export>
+    <cpp cflags="-I${prefix}/include" lflags="-L${prefix}/lib -Wl,-rpath,${prefix}/lib -lpr2_simple_arm_motions" />
+  </export>
+
+</package>
+
+

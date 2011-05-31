@@ -1,0 +1,6 @@
+<launch>
+    <include file="$(find pr2_simple_arm_motions)/launch/move_arms.launch"/>
+    <include file="$(find pr2_simple_torso_motions)/launch/move_torso.launch"/>
+    <include file="$(find pr2_simple_head_motions)/launch/move_head.launch"/>
+    <include file="$(find pr2_simple_base_motions)/launch/move_base.launch"/>
+</launch>

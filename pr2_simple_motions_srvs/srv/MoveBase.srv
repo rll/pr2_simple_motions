@@ -1,0 +1,6 @@
+float64 x
+float64 y
+bool set_velocity
+float64 velocity
+---
+bool result

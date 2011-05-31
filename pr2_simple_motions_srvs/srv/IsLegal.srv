@@ -1,0 +1,8 @@
+geometry_msgs/PointStamped goal_point
+float64 roll
+float64 pitch
+float64 yaw
+string arm
+string link_frame
+---
+bool legal

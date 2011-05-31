@@ -1,0 +1,122 @@
+initial_pickup: 
+    weight_points:
+        -   stance_name: initial_pickup_up
+            dur: 5.0
+            params: []
+        -   stance_name: initial_pickup_down
+            dur: 5.0
+            params: []
+        -   stance_name: close_left
+            dur: 1.0
+            params: []
+            
+sweep_left:
+    weight_points:
+        -   stance_name: close_left
+            dur: 2.5
+            params: []
+        -   stance_name: examine_left
+            dur: 2.5
+            params: []
+        -   stance_name: off_table_right_up
+            dur: 2.5
+            params: []
+        -   stance_name: off_table_right_up_sweep
+            dur: 2.5
+            params: []            
+        -   stance_name: off_table_right_down
+            dur: 2.5
+            params: []            
+        -   stance_name: sweep_left_end
+            dur: 5.0
+            params: []
+            
+sweep_left_smooth:
+    weight_points:
+        -   stance_name: smooth_left_start
+            dur: 2.5
+            params: []            
+        -   stance_name: smooth_left_end
+            dur: 5.0
+            params: []            
+        -   stance_name: sweep_left_end
+            dur: 2.5
+            params: []
+        -   stance_name: open_right
+            dur: 2.5
+            params: []
+            
+sweep_right:
+    weight_points:
+        -   stance_name: close_right
+            dur: 2.5
+            params: []
+        -   stance_name: open_left
+            dur: 2.5
+            params: []
+        -   stance_name: examine_right
+            dur: 2.5
+            params: []
+        -   stance_name: off_table_left_up
+            dur: 1.0
+            params: []
+        -   stance_name: off_table_left_up_sweep
+            dur: 1.0
+            params: []            
+        -   stance_name: off_table_left_down
+            dur: 2.5
+            params: []            
+        -   stance_name: sweep_right_end
+            dur: 5.0
+            params: []
+
+sweep_right_smooth:
+    weight_points:
+        -   stance_name: smooth_right_start
+            dur: 2.5
+            params: []            
+        -   stance_name: smooth_right_end
+            dur: 5.0
+            params: []            
+        -   stance_name: sweep_right_end
+            dur: 2.5
+            params: []
+        -   stance_name: open_left
+            dur: 2.5
+            params: []
+            
+smooth_towel:
+    weight_points:
+        -   stance_name: arms_up
+            dur: 2.5
+            params: []
+        -   stance_name: smooth_towel_up
+            dur: 2.5
+            params: []            
+        -   stance_name: smooth_towel_down
+            dur: 2.5
+            params: []           
+        -   stance_name: smooth_towel_out
+            dur: 5.0
+            params: []  
+        -   stance_name: arms_up
+            dur: 2.5
+            params: []
+            
+smooth_towel_small:
+    weight_points:
+        -   stance_name: arms_up
+            dur: 2.5
+            params: []
+        -   stance_name: smooth_towel_small_up
+            dur: 2.5
+            params: []            
+        -   stance_name: smooth_towel_small_down
+            dur: 2.5
+            params: []           
+        -   stance_name: smooth_towel_small_out
+            dur: 5.0
+            params: []  
+        -   stance_name: arms_up
+            dur: 2.5
+            params: []

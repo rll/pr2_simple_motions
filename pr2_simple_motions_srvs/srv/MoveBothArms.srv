@@ -1,0 +1,5 @@
+pr2_simple_motions_msgs/GripTarget target_left
+pr2_simple_motions_msgs/GripTarget target_right
+float64 dur
+---
+bool success

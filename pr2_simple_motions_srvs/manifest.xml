@@ -1,0 +1,18 @@
+<package>
+  <description brief="pr2_simple_motions_srvs">
+
+     pr2_simple_motions_srvs
+
+  </description>
+  <author>Stephen Miller</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/pr2_simple_motions_srvs</url>
+  <depend package="rospy"/>
+  <depend package="pr2_simple_motions_msgs"/>
+  <depend package="geometry_msgs"/>
+  <depend package="std_msgs"/>
+
+</package>
+
+

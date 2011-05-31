@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="pr2_simple_head_motions" type="head_mover.py" name="head_mover" output="screen">
+    <param name="using_checkerboard" value="false" />
+    </node>
+</launch>

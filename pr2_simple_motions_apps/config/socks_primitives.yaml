@@ -1,0 +1,11 @@
+init: 
+    weight_points:
+        -   stance_name: open_both
+            dur: 1.0
+            params: []
+        -   stance_name: examine_height
+            dur: 5.0
+            params: []
+        -   stance_name: arms_up
+            dur: 5.0
+            params: []

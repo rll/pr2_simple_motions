@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="pr2_simple_base_motions" type="base_move.py" name="base_mover" output="screen"/>
+</launch>

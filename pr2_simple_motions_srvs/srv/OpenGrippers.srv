@@ -1,0 +1,4 @@
+string arms
+bool extra_tight
+---
+bool success

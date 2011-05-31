@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="pr2_simple_torso_motions" type="torso_mover.py" name="torso_mover" output="screen" />
+</launch>

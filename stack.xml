@@ -1,0 +1,15 @@
+<stack>
+  <description brief="pr2_simple_motions">pr2_simple_motions</description>
+  <author>Maintained by Stephen Miller</author>
+  <license>BSD</license>  
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/pr2_simple_motions</url>
+  <depend stack="ros" />
+  <depend stack="common" />
+  <depend stack="pr2_common_actions" />
+  <depend stack="pr2_controllers" />
+  <depend stack="geometry" />
+  <depend stack="common_msgs" />
+  <depend stack="navigation" />
+  <depend stack="pr2_navigation_apps" />
+</stack>
