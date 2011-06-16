@@ -326,6 +326,7 @@ class OpenGrippers(SuccessFailureState):
 
 class CloseGrippers(SuccessFailureState):
     def __init__(self, arm='b'):
+        SuccessFailureState.__init__(self)
         self.arm = arm
     def execute(self, userdata):
         if not GripUtils.close_gripper(self.arm):
