@@ -42,6 +42,7 @@ def grab_point(point,roll=pi/2,pitch=pi/4,yaw=0,arm='l',x_offset=0.0,y_offset=0.
     y = point.point.y + y_offset
     z = point.point.z + z_offset
     frame = point.header.frame_id
+    print "Grabbing point %f,%f,%f"%(x,y,z)
     return grab(x=x,y=y,z=z,roll=roll,pitch=pitch,yaw=yaw,arm=arm,frame=frame,link_frame=link_frame,approach=approach,INIT_SCOOT_AMT=INIT_SCOOT_AMT)
 
 #Grab a point, iteratively increasing the approach til you've picked something up.
@@ -64,8 +65,8 @@ def grab(x,y,z,roll=pi/2,pitch=pi/4,yaw=0,frame="torso_lift_link",arm='l',link_f
         num_tries = 5
     while not has_obj:
         
-        #success = go_to(x=new_x,y=new_y,z=z+0.01*(1-sin(pitch)),roll=roll,pitch=pitch,yaw=yaw,grip=False,frame=frame,arm=arm,dur=3.0,link_frame=link_frame)
-        success = go_to(x=new_x,y=new_y,z=z+0.01*(1-sin(pitch))-0.005,roll=roll,pitch=pitch,yaw=yaw,grip=False,frame=frame,arm=arm,dur=3.0,link_frame=link_frame)
+        success = go_to(x=new_x,y=new_y,z=z+0.01*(1-sin(pitch)),roll=roll,pitch=pitch,yaw=yaw,grip=False,frame=frame,arm=arm,dur=3.0,link_frame=link_frame)
+        #success = go_to(x=new_x,y=new_y,z=z+0.01*(1-sin(pitch))-0.005,roll=roll,pitch=pitch,yaw=yaw,grip=False,frame=frame,arm=arm,dur=3.0,link_frame=link_frame)
         #if not success:
         #    return False
         print "Closing gripper"
