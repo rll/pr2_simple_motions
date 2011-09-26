@@ -37,7 +37,7 @@ def force_go_to_pt(point,roll,pitch,yaw,grip,arm,dur=5.0,x_offset=0.0,y_offset=0
     
 
 #Grab a 3D point with the gripper, iteratively increasing your approach til you've picked something up
-def grab_point(point,roll=pi/2,pitch=pi/4,yaw=0,arm='l',x_offset=0.0,y_offset=0.0,z_offset=0.0,link_frame='',approach=True,INIT_SCOOT_AMT=0.03):
+def grab_point(point,roll=pi/2,pitch=pi/4,yaw=0,arm='l',x_offset=0.0,y_offset=0.0,z_offset=0.02,link_frame='',approach=True,INIT_SCOOT_AMT=0.03):
     x = point.point.x + x_offset
     y = point.point.y + y_offset
     z = point.point.z + z_offset
@@ -108,6 +108,8 @@ def go_to_multi (x_l,y_l,z_l,roll_l,pitch_l,yaw_l,grip_l,frame_l
                 ,x_r,y_r,z_r,roll_r,pitch_r,yaw_r,grip_r,frame_r
                 ,link_frame_l = "", link_frame_r = ""
                 ,dur=5.0):
+    print "Going to (%f,%f,%f) at (%f,%f,%f) and (%f,%f,%f) at (%f,%f,%f)" % (x_l,y_l,z_l,roll_l,pitch_l,yaw_l,x_r,y_r,z_r,roll_r,pitch_r,yaw_r)
+
     pt_l = PointStamped()
     pt_l.header.stamp = rospy.Time.now()
     pt_l.header.frame_id = frame_l
@@ -124,7 +126,9 @@ def go_to_multi (x_l,y_l,z_l,roll_l,pitch_l,yaw_l,grip_l,frame_l
                         ,point_r=pt_r,roll_r=roll_r,pitch_r=pitch_r,yaw_r=yaw_r,grip_r=grip_r
                         ,link_frame_l=link_frame_l, link_frame_r=link_frame_r
                         ,dur=dur)
-                
+
+SPEEDUP = 2.0
+
 #Move the gripper to a StampedPoint. Relies on the "move_one_arm" service
 #FIXME: should remap service name instead of hardcoding 
 def go_to_pt(point,roll,pitch,yaw,grip,arm,dur=5.0,x_offset=0.0,y_offset=0.0,z_offset=0.0,link_frame="",verbose=False):
@@ -139,7 +143,7 @@ def go_to_pt(point,roll,pitch,yaw,grip,arm,dur=5.0,x_offset=0.0,y_offset=0.0,z_o
         move_one_arm = rospy.ServiceProxy("move_one_arm",MoveOneArm)
         if verbose:
             print "Calling move_one_arm at orientation (%f,%f,%f) in frame %s"%(roll,pitch,yaw,point.header.frame_id)
-        resp = move_one_arm(target=target,dur=dur)
+        resp = move_one_arm(target=target,dur=dur/SPEEDUP)
     except rospy.ServiceException,e:
         rospy.loginfo("Service Call Failed: %s"%e)
         return False
@@ -165,7 +169,7 @@ def go_to_pts(point_l,roll_l,pitch_l,yaw_l,grip_l,point_r,roll_r,pitch_r,yaw_r,g
         move_both_arms = rospy.ServiceProxy("move_both_arms",MoveBothArms)
         if verbose:
             print "Calling move_both_arms"
-        resp = move_both_arms(target_left=target_l,target_right=target_r,dur=dur)
+        resp = move_both_arms(target_left=target_l,target_right=target_r,dur=dur/SPEEDUP)
     except rospy.ServiceException,e:
         rospy.loginfo("Service Call Failed: %s"%e)
         return False
@@ -229,9 +233,9 @@ def has_object(arm):
         return self.has_object(arm)
     if resp:
         if arm == 'l':
-            return -0.0005 < resp.position < 0.01
+            return -0.0015 < resp.position < 0.01 # adjust for thinner towel
         else:
-            return -0.0005 < resp.position < 0.01
+            return -0.0015 < resp.position < 0.01
 
 #Closes the gripper by calling the "close_grippers" service
 #FIXME: should remap service name instead of hardcoding 
@@ -269,6 +273,9 @@ def recall_arm(arm,grip=False):
     lateral_amount = 0.65
     forward_amount = 0.3
 
+    if grip == False:
+        open_gripper(arm) # avoid tugging cloth
+
     if arm == 'b':
         lateral_amount_r = lateral_amount * -1
         lateral_amount_l = lateral_amount
@@ -280,13 +287,13 @@ def recall_arm(arm,grip=False):
                                 x_r=forward_amount,         y_r=lateral_amount_r,   z_r=height,
                                 roll_r=0,                   pitch_r=0,              yaw_r=0,
                                 frame_r="torso_lift_link",
-                                grip_r=grip,           dur=2.5)
+                                grip_r=grip,           dur=4.0)
     else:
         if arm == 'r':
             lateral_amount = lateral_amount * -1
         return go_to(   x=forward_amount, y=lateral_amount, z=height,
                         roll=0, pitch=0, yaw=0, grip=grip,
-                        frame="torso_lift_link", dur=2.5, arm=arm)
+                        frame="torso_lift_link", dur=4.0, arm=arm)
 
 def arms_up(grip=False):
     return recall_arm('b', grip)
@@ -441,4 +448,111 @@ class RollWatcher:
 
     def get_position(self):
         return get_joint_position("%s_wrist_roll_joint"%self.arm) + get_joint_position("%s_forearm_roll_joint"%self.arm)
+
+#Grab multiple 3D points with the grippers, iteratively increasing your approach til you've picked something up
+def grab_points( point_l
+                ,point_r
+                ,roll_l=pi/2,pitch_l=pi/4,yaw_l=0,x_offset_l=0.0,y_offset_l=0.0,z_offset_l=0.0,link_frame_l=''
+                ,roll_r=pi/2,pitch_r=pi/4,yaw_r=0,x_offset_r=0.0,y_offset_r=0.0,z_offset_r=0.0,link_frame_r=''
+                ,approach=True,INIT_SCOOT_AMT=0.03):
+    x_l = point_l.point.x + x_offset_l
+    y_l = point_l.point.y + y_offset_l
+    z_l = point_l.point.z + z_offset_l
+    x_r = point_r.point.x + x_offset_r
+    y_r = point_r.point.y + y_offset_r
+    z_r = point_r.point.z + z_offset_r
+    frame_l = point_l.header.frame_id
+    frame_r = point_r.header.frame_id
+    return grab_multi( x_l=x_l,y_l=y_l,z_l=z_l,roll_l=roll_l,pitch_l=pitch_l,yaw_l=yaw_l,frame_l=frame_l,link_frame_l=link_frame_l
+                      ,x_r=x_r,y_r=y_r,z_r=z_r,roll_r=roll_r,pitch_r=pitch_r,yaw_r=yaw_r,frame_r=frame_r,link_frame_r=link_frame_r
+                      ,approach=approach,INIT_SCOOT_AMT=INIT_SCOOT_AMT)
+
+#Grab multiple points, iteratively increasing the approach til you've picked something up.
+def grab_multi(  x_l,y_l,z_l
+                ,x_r,y_r,z_r
+                ,roll_l=pi/2,pitch_l=pi/4,yaw_l=0, frame_l="torso_lift_link", link_frame_l=''
+                ,roll_r=pi/2,pitch_r=pi/4,yaw_r=0, frame_r="torso_lift_link", link_frame_r=''
+                ,approach=True,INIT_SCOOT_AMT=0.03):
+    if approach:
+        dx_l = -1*APPROACH_BACK * cos(yaw_l)
+        dy_l = -1*APPROACH_BACK * sin(yaw_l)
+        dx_r = -1*APPROACH_BACK * cos(yaw_r)
+        dy_r = -1*APPROACH_BACK * sin(yaw_r)
+        success = go_to_multi( x_l=x_l+dx_l,y_l=y_l+dy_l,z_l=z_l+APPROACH_UP,roll_l=roll_l,pitch_l=pitch_l,yaw_l=yaw_l,grip_l=False,frame_l=frame_l,link_frame_l=link_frame_l
+                              ,x_r=x_r+dx_r,y_r=y_r+dy_r,z_r=z_r+APPROACH_UP,roll_r=roll_r,pitch_r=pitch_r,yaw_r=yaw_r,grip_r=False,frame_r=frame_r,link_frame_r=link_frame_r
+                              ,dur=5.0)
+        #if not success:
+        #    return False
+        new_x_l = x_l+INIT_SCOOT_AMT*cos(yaw_l)
+        new_y_l = y_l+INIT_SCOOT_AMT*sin(yaw_l)
+        new_x_r = x_r+INIT_SCOOT_AMT*cos(yaw_r)
+        new_y_r = y_r+INIT_SCOOT_AMT*sin(yaw_r)
+    else:
+        new_x_l = x_l
+        new_y_l = y_l
+        new_x_r = x_r
+        new_y_r = y_r
+    has_obj_l = False
+    has_obj_r = False
+    i = 0
+    num_tries = 4
+    if pitch_l==pi/2 or pitch_r==pi/2:
+        num_tries = 5
+    while not (has_obj_l and has_obj_r):
+        if not (has_obj_l or has_obj_r):
+            success = go_to_multi(
+                                     x_l=new_x_l,y_l=new_y_l,z_l=z_l+0.03*(1-sin(pitch_l)),roll_l=roll_l,pitch_l=pitch_l,yaw_l=yaw_l,grip_l=False,frame_l=frame_l
+                                    ,x_r=new_x_r,y_r=new_y_r,z_r=z_r+0.03*(1-sin(pitch_r)),roll_r=roll_r,pitch_r=pitch_r,yaw_r=yaw_r,grip_r=False,frame_r=frame_r
+                                    ,dur=3.0
+                                    ,link_frame_l=link_frame_l,link_frame_r=link_frame_r)
+            close_grippers()
+            rospy.sleep(0.5)
+            has_obj_l = has_object('l')
+            has_obj_r = has_object('r')
+        elif not has_obj_l:
+            success = go_to(x=new_x_l,y=new_y_l,z=z_l+0.03*(1-sin(pitch_l)),roll=roll_l,pitch=pitch_l,yaw=yaw_l,grip=False,frame=frame_l,arm='l',dur=3.0,link_frame=link_frame_l)
+            close_gripper('l')
+            rospy.sleep(0.5)
+            has_obj_l = has_object('l')
+        elif not has_obj_r:
+            success = go_to(x=new_x_r,y=new_y_r,z=z_l+0.03*(1-sin(pitch_r)),roll=roll_r,pitch=pitch_r,yaw=yaw_r,grip=False,frame=frame_r,arm='r',dur=3.0,link_frame=link_frame_r)
+            close_gripper('r')
+            rospy.sleep(0.5)
+            has_obj_r = has_object('r')
+        if not (has_obj_l or has_obj_r):
+            open_grippers()
+            
+        elif not has_obj_l:
+            open_gripper('l')
+        elif not has_obj_r:
+            open_gripper('r')
+        if (not has_obj_l) or (not has_obj_r):
+            i += 1
+        if not has_obj_l:
+            if pitch_l==pi/2:
+                success = go_to(x=new_x_l,y=new_y_l,z=z_l+0.03,roll=roll_l,pitch=pitch_l,yaw=yaw_l,grip=False,frame=frame_l,arm='l',dur=3.0,link_frame=link_frame_l)
+            new_x_l += SCOOT_AMT * cos(yaw_l)
+            new_y_l += SCOOT_AMT * sin(yaw_l)
+            if i == num_tries:
+                new_x_l = x_l - INIT_SCOOT_AMT
+                new_y_l = y_l
+            elif i == 2*num_tries:
+                new_x_l = x_l + INIT_SCOOT_AMT
+                new_y_l = y_l
+            if pitch_l==pi/2:
+                go_to(x=new_x_l,y=new_y_l,z=z_l+0.03,roll=roll_l,pitch=pitch_l,yaw=yaw_l,grip=False,frame=frame_l,arm='l',dur=3.0,link_frame=link_frame_l)
+        if not has_obj_r:
+            if pitch_r==pi/2:
+                success = go_to(x=new_x_r,y=new_y_r,z=z_r+0.03,roll=roll_r,pitch=pitch_r,yaw=yaw_r,grip=False,frame=frame_r,arm='r',dur=3.0,link_frame=link_frame_r)
+            new_x_r += SCOOT_AMT * cos(yaw_r)
+            new_y_r += SCOOT_AMT * sin(yaw_r)
+            if i == num_tries:
+                new_x_r = x_r - INIT_SCOOT_AMT
+                new_y_r = y_r
+            elif i == 2*num_tries:
+                new_x_r = x_r + INIT_SCOOT_AMT
+                new_y_r = y_r
+            if pitch_r==pi/2:
+                go_to(x=new_x_r,y=new_y_r,z=z_r+0.03,roll=roll_r,pitch=pitch_r,yaw=yaw_r,grip=False,frame=frame_r,arm='r',dur=3.0,link_frame=link_frame_r)
+    return True
 
