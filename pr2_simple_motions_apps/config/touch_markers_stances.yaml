@@ -1,7 +1,7 @@
 touch_markers: {arms: b, frame_left: base_link, frame_right: base_link, grip_left: true,
-  grip_right: true, head_pan: 0.0, head_tilt: 0.0, pitch_left: 0.2493927743416755,
-  pitch_right: 0.24953930308108094, roll_left: 0.034091218452134885, roll_right: -0.11868099621479497,
-  set_head_angle: false, set_torso_height: false, torso_height: 0.0, x_left: 0.59998543750717392,
-  x_right: 0.59270434443874698, y_left: 0.19134074213771607, y_right: -0.15872207355288717,
-  yaw_left: 0.011050315587657516, yaw_right: 0.041265966948736493, z_left: 0.77036566058854361,
-  z_right: 0.77666444947524482}
+  grip_right: true, head_pan: 0.0, head_tilt: 0.0, pitch_left: 1.2172361668145597,
+  pitch_right: 1.1635405520150628, roll_left: 3.0435544968351493, roll_right: -0.24441839871918131,
+  set_head_angle: false, set_torso_height: false, torso_height: 0.0, x_left: 0.38944799304037442,
+  x_right: 0.39377439667333508, y_left: 0.18348333700322969, y_right: -0.19506126385557729,
+  yaw_left: -0.093111001930750045, yaw_right: -0.25374996621739587, z_left: 0.44011661395819646,
+  z_right: 0.44754143771492172}

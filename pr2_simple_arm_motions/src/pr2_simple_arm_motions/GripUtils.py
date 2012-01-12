@@ -95,6 +95,7 @@ def grab(x,y,z,roll=pi/2,pitch=pi/4,yaw=0,frame="torso_lift_link",arm='l',link_f
 
 #Move the gripper to a given x,y,z point        
 def go_to(x,y,z,roll,pitch,yaw,grip,frame,arm,dur=5.0,link_frame=""):
+    print "Going to (%f,%f,%f), arm %s" % (x,y,z,arm)
     pt = PointStamped()
     pt.header.stamp = rospy.Time.now()
     pt.header.frame_id = frame
@@ -233,9 +234,9 @@ def has_object(arm):
         return self.has_object(arm)
     if resp:
         if arm == 'l':
-            return -0.0015 < resp.position < 0.01 # adjust for thinner towel
+            return -0.0008 < resp.position < 0.01 # adjust for thinner towel
         else:
-            return -0.0015 < resp.position < 0.01
+            return -0.0008 < resp.position < 0.01
 
 #Closes the gripper by calling the "close_grippers" service
 #FIXME: should remap service name instead of hardcoding 
