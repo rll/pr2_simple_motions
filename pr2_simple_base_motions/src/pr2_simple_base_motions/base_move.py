@@ -37,8 +37,6 @@ found_box
 ---
 Interfaces with the box_detector to say whether or not you've gotten within range of a box. Used to keep the robot from hitting the table
 
-
-
 """
 
 class BaseMover:
@@ -120,7 +118,8 @@ class BaseMover:
         return math.sqrt(sum)
 
     def move_base(self,req):
-        rospy.loginfo("Received new base displacement request")
+        rospy.loginfo("Received new base displacement request")  
+        print "to move by",req.x,req.y        
         kp = 0.7
         kd = 0
         ki = 0.1
