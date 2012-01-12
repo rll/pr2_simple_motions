@@ -1,5 +1,5 @@
 <launch>
-    <include file="$(find joint_states_listener)/launch/joint_states_listener.launch" />
+    <!--<include file="$(find joint_states_listener)/launch/joint_states_listener.launch" />--> <!-- Already in pr2_simple_motions_apps move_all.launch -->
     <node pkg="pr2_simple_motions_apps" type="stance_server.py" name="stance_server" output="screen" />
     <node pkg="pr2_simple_motions_apps" type="primitive_server.py" name="primitive_server" output="screen" />
 </launch>
