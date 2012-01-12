@@ -118,8 +118,7 @@ class BaseMover:
         return math.sqrt(sum)
 
     def move_base(self,req):
-        rospy.loginfo("Received new base displacement request")  
-        print "to move by",req.x,req.y        
+        rospy.loginfo("Received new base displacement request")                 
         kp = 0.7
         kd = 0
         ki = 0.1
