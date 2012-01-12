@@ -16,7 +16,8 @@ import copy
 #Hard voded variables for how to modify grip if you've failed to reach a grasp point
 APPROACH_UP = 0.01
 APPROACH_BACK = 0.005
-SCOOT_AMT = 0.015
+#SCOOT_AMT = 0.015
+SCOOT_AMT = 0
 #INIT_SCOOT_AMT = 0.03
 
 global_listener = None
@@ -52,6 +53,7 @@ def grab(x,y,z,roll=pi/2,pitch=pi/4,yaw=0,frame="torso_lift_link",arm='l',link_f
         dy = -1*APPROACH_BACK * sin(yaw)
         success = go_to(x=x+dx,y=y+dy,z=z+APPROACH_UP,roll=roll,pitch=pitch,yaw=yaw,grip=False,frame=frame,arm=arm,dur=5.0,link_frame=link_frame) 
         if not success:
+
             return False
         new_x = x+INIT_SCOOT_AMT*cos(yaw)
         new_y = y+INIT_SCOOT_AMT*sin(yaw)
@@ -76,8 +78,8 @@ def grab(x,y,z,roll=pi/2,pitch=pi/4,yaw=0,frame="torso_lift_link",arm='l',link_f
         if not has_obj:
             print "Opening gripper"
             open_gripper(arm)
-            if pitch==pi/2:
-                success = go_to(x=new_x,y=new_y,z=z+0.03,roll=roll,pitch=pitch,yaw=yaw,grip=False,frame=frame,arm=arm,dur=3.0,link_frame=link_frame)
+            #if pitch==pi/2:
+                #success = go_to(x=new_x,y=new_y,z=z+0.03,roll=roll,pitch=pitch,yaw=yaw,grip=False,frame=frame,arm=arm,dur=3.0,link_frame=link_frame)
             new_x += SCOOT_AMT * cos(yaw)
             new_y += SCOOT_AMT * sin(yaw)
             i += 1
@@ -87,9 +89,10 @@ def grab(x,y,z,roll=pi/2,pitch=pi/4,yaw=0,frame="torso_lift_link",arm='l',link_f
             elif i == 2*num_tries:
                 new_x = x + INIT_SCOOT_AMT
                 new_y = y 
-            if pitch==pi/2:
-                go_to(x=new_x,y=new_y,z=z+0.03,roll=roll,pitch=pitch,yaw=yaw,grip=False,frame=frame,arm=arm,dur=3.0,link_frame=link_frame)
-                
+            #if pitch==pi/2:
+            #    go_to(x=new_x,y=new_y,z=z+0.03,roll=roll,pitch=pitch,yaw=yaw,grip=False,frame=frame,arm=arm,dur=3.0,link_frame=link_frame)
+        if pitch==pi/2:
+            z-=0.015
         rospy.sleep(0.5)
     return True
 
@@ -160,6 +163,7 @@ def go_to_pts(point_l,roll_l,pitch_l,yaw_l,grip_l,point_r,roll_r,pitch_r,yaw_r,g
     point_l.point.x += x_offset_l
     point_l.point.y += y_offset_l
     point_l.point.z += z_offset_l
+
     point_r.point.x += x_offset_r
     point_r.point.y += y_offset_r
     point_r.point.z += z_offset_r
@@ -230,12 +234,15 @@ def has_object(arm):
     except rospy.ServiceException,e:
         rospy.loginfo("Service Call Failed: %s"%e)
         rospy.sleep(0.2)
-        return self.has_object(arm)
+        return has_object(arm)
     if resp:
+        #print "resp",resp.position
         if arm == 'l':
-            return -0.0015 < resp.position < 0.01 # adjust for thinner towel
+            return -0.0004 < resp.position < 0.01 # adjust for thinner towel
         else:
-            return -0.0015 < resp.position < 0.01
+            return -0.0004 < resp.position < 0.01
+    else:
+        return False
 
 #Closes the gripper by calling the "close_grippers" service
 #FIXME: should remap service name instead of hardcoding 
@@ -503,19 +510,20 @@ def grab_multi(  x_l,y_l,z_l
             success = go_to_multi(
                                      x_l=new_x_l,y_l=new_y_l,z_l=z_l+0.03*(1-sin(pitch_l)),roll_l=roll_l,pitch_l=pitch_l,yaw_l=yaw_l,grip_l=False,frame_l=frame_l
                                     ,x_r=new_x_r,y_r=new_y_r,z_r=z_r+0.03*(1-sin(pitch_r)),roll_r=roll_r,pitch_r=pitch_r,yaw_r=yaw_r,grip_r=False,frame_r=frame_r
-                                    ,dur=3.0
+                                    ,dur=5.0
                                     ,link_frame_l=link_frame_l,link_frame_r=link_frame_r)
             close_grippers()
             rospy.sleep(0.5)
             has_obj_l = has_object('l')
             has_obj_r = has_object('r')
+            print "has_obj_l",has_obj_l,"r",has_obj_r
         elif not has_obj_l:
-            success = go_to(x=new_x_l,y=new_y_l,z=z_l+0.03*(1-sin(pitch_l)),roll=roll_l,pitch=pitch_l,yaw=yaw_l,grip=False,frame=frame_l,arm='l',dur=3.0,link_frame=link_frame_l)
+            success = go_to(x=new_x_l,y=new_y_l,z=z_l+0.03*(1-sin(pitch_l)),roll=roll_l,pitch=pitch_l,yaw=yaw_l,grip=False,frame=frame_l,arm='l',dur=5.0,link_frame=link_frame_l)
             close_gripper('l')
             rospy.sleep(0.5)
             has_obj_l = has_object('l')
         elif not has_obj_r:
-            success = go_to(x=new_x_r,y=new_y_r,z=z_l+0.03*(1-sin(pitch_r)),roll=roll_r,pitch=pitch_r,yaw=yaw_r,grip=False,frame=frame_r,arm='r',dur=3.0,link_frame=link_frame_r)
+            success = go_to(x=new_x_r,y=new_y_r,z=z_r+0.03*(1-sin(pitch_r)),roll=roll_r,pitch=pitch_r,yaw=yaw_r,grip=False,frame=frame_r,arm='r',dur=5.0,link_frame=link_frame_r)
             close_gripper('r')
             rospy.sleep(0.5)
             has_obj_r = has_object('r')
@@ -529,21 +537,21 @@ def grab_multi(  x_l,y_l,z_l
         if (not has_obj_l) or (not has_obj_r):
             i += 1
         if not has_obj_l:
-            if pitch_l==pi/2:
-                success = go_to(x=new_x_l,y=new_y_l,z=z_l+0.03,roll=roll_l,pitch=pitch_l,yaw=yaw_l,grip=False,frame=frame_l,arm='l',dur=3.0,link_frame=link_frame_l)
+            #if pitch_l==pi/2:                
+            #    success = go_to(x=new_x_l,y=new_y_l,z=z_l+0.03,roll=roll_l,pitch=pitch_l,yaw=yaw_l,grip=False,frame=frame_l,arm='l',dur=3.0,link_frame=link_frame_l)
             new_x_l += SCOOT_AMT * cos(yaw_l)
-            new_y_l += SCOOT_AMT * sin(yaw_l)
+            new_y_l += SCOOT_AMT * sin(yaw_l)            
             if i == num_tries:
                 new_x_l = x_l - INIT_SCOOT_AMT
                 new_y_l = y_l
             elif i == 2*num_tries:
                 new_x_l = x_l + INIT_SCOOT_AMT
                 new_y_l = y_l
-            if pitch_l==pi/2:
-                go_to(x=new_x_l,y=new_y_l,z=z_l+0.03,roll=roll_l,pitch=pitch_l,yaw=yaw_l,grip=False,frame=frame_l,arm='l',dur=3.0,link_frame=link_frame_l)
+            #if pitch_l==pi/2:
+            #    go_to(x=new_x_l,y=new_y_l,z=z_l+0.03,roll=roll_l,pitch=pitch_l,yaw=yaw_l,grip=False,frame=frame_l,arm='l',dur=3.0,link_frame=link_frame_l)
         if not has_obj_r:
-            if pitch_r==pi/2:
-                success = go_to(x=new_x_r,y=new_y_r,z=z_r+0.03,roll=roll_r,pitch=pitch_r,yaw=yaw_r,grip=False,frame=frame_r,arm='r',dur=3.0,link_frame=link_frame_r)
+            #if pitch_r==pi/2:                
+            #    success = go_to(x=new_x_r,y=new_y_r,z=z_r+0.03,roll=roll_r,pitch=pitch_r,yaw=yaw_r,grip=False,frame=frame_r,arm='r',dur=3.0,link_frame=link_frame_r)
             new_x_r += SCOOT_AMT * cos(yaw_r)
             new_y_r += SCOOT_AMT * sin(yaw_r)
             if i == num_tries:
@@ -552,7 +560,13 @@ def grab_multi(  x_l,y_l,z_l
             elif i == 2*num_tries:
                 new_x_r = x_r + INIT_SCOOT_AMT
                 new_y_r = y_r
-            if pitch_r==pi/2:
-                go_to(x=new_x_r,y=new_y_r,z=z_r+0.03,roll=roll_r,pitch=pitch_r,yaw=yaw_r,grip=False,frame=frame_r,arm='r',dur=3.0,link_frame=link_frame_r)
+            #if pitch_r==pi/2:
+            #    go_to(x=new_x_r,y=new_y_r,z=z_r+0.03,roll=roll_r,pitch=pitch_r,yaw=yaw_r,grip=False,frame=frame_r,arm='r',dur=3.0,link_frame=link_frame_r)
+        
+        if pitch_l == pi/2:
+            z_l -= 0.015
+        if pitch_r == pi/2:
+            z_r -= 0.015
+    
     return True
 
