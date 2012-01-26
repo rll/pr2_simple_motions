@@ -48,9 +48,12 @@ class BaseMover:
         self.base_move_srv = rospy.Service('move_base', MoveBase, self.move_base)
         self.base_rotate_srv = rospy.Service('rotate_base', RotateBase, self.rotate_base)
         self.base_pub = rospy.Publisher("base_controller/command",Twist)
-        self.set_pose_srv = rospy.Service('set_pose', MoveBaseToPose, self.set_pose)
+        self.set_pose_service = rospy.Service('set_pose', MoveBaseToPose, self.set_pose_srv)
 
-    def set_pose(self,req):
+    def set_pose_srv(self, req):
+        self.set_pose(req.target)
+
+    def set_pose(self,target):
         rospy.loginfo("Received new base pose request")
         kp = [0.7, 0.7, 1]
         kd = 0
@@ -61,7 +64,7 @@ class BaseMover:
         #re = rotational error (angle)
         #d = derivative
         #i = integral
-        goal = req.target
+        goal = target
 
         i_le = [0, 0, 0] # i_le = approximate integral of lateral error
 
@@ -88,7 +91,7 @@ class BaseMover:
             prev_le = le
 
             rospy.loginfo("Still have to go: %s", le)
-            if self.magnitude(le) < 0.07:
+            if self.magnitude(le) < 0.07: #TODO: Tune this
                 break
             command = Twist()
             command.linear.x = p[0] + d[0]+ i[0]
