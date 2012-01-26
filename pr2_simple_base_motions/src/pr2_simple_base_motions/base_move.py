@@ -46,7 +46,7 @@ class BaseMover:
         self.using_checkerboard = rospy.get_param('~using_checkerboard',False)
         self.world_frame = rospy.get_param('~world_frame','odom_combined')
         self.base_move_srv = rospy.Service('move_base', MoveBase, self.move_base_srv)
-        self.base_rotate_srv = rospy.Service('rotate_base', RotateBase, self.rotate_base_srv)
+        self.base_rotate_srv = rospy.Service('rotate_base', RotateBase, self.rotate_base)
         self.base_pub = rospy.Publisher("base_controller/command",Twist)
         self.set_pose_service = rospy.Service('set_pose', MoveBaseToPose, self.set_pose_srv)
 
