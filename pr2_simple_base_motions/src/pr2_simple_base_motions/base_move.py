@@ -45,8 +45,8 @@ class BaseMover:
         self.found_box = False
         self.using_checkerboard = rospy.get_param('~using_checkerboard',False)
         self.world_frame = rospy.get_param('~world_frame','odom_combined')
-        self.base_move_srv = rospy.Service('move_base', MoveBase, self.move_base)
-        self.base_rotate_srv = rospy.Service('rotate_base', RotateBase, self.rotate_base)
+        self.base_move_srv = rospy.Service('move_base', MoveBase, self.move_base_srv)
+        self.base_rotate_srv = rospy.Service('rotate_base', RotateBase, self.rotate_base_srv)
         self.base_pub = rospy.Publisher("base_controller/command",Twist)
         self.set_pose_service = rospy.Service('set_pose', MoveBaseToPose, self.set_pose_srv)
 
@@ -120,13 +120,16 @@ class BaseMover:
             sum += component ** 2
         return math.sqrt(sum)
 
-    def move_base(self,req):
+    def move_base_srv(self, req):
+        self.move_base(req.x, req.y)
+
+    def move_base(self,dx,dy):
         rospy.loginfo("Received new base displacement request")                 
         kp = 0.7
         kd = 0
         ki = 0.1
 
-        goal = self.goal(req.x, req.y)
+        goal = self.goal(dx, dy)
         prev_e_t = list(self.goal_displ(goal))
         i_e_t = [0, 0] # i_e_t = approximate integral of error
 
