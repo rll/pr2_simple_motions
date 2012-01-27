@@ -91,7 +91,7 @@ class BaseMover:
             prev_le = le
 
             rospy.loginfo("Still have to go: %s", le)
-            if self.magnitude(le) < 0.07: #TODO: Tune this
+            if self.magnitude(le[0:2]) < 0.05 and le[2] < math.pi/72: #TODO: Tune this
                 break
             command = Twist()
             command.linear.x = p[0] + d[0]+ i[0]
