@@ -122,7 +122,7 @@ class StanceServer:
         return self.add_stance(stance_name,stance)
         
     def add_stance(self,stance_name,stance):
-        print "Adding stance '%s':\n%s"%(stance_name,stance)
+        #print "Adding stance '%s':\n%s"%(stance_name,stance)
         #my_stance = self.copy_stance(stance)
         my_stance = stance
         #If the stance has not been added before, we make a server
