@@ -26,10 +26,13 @@ Moves the torso to a specified position
 class TorsoMover:
     def __init__(self):
         self.client_torso = actionlib.SimpleActionClient('torso_controller/position_joint_action',SingleJointPositionAction)
-        self.torso_move_srv = rospy.Service('move_torso', MoveTorso, self.move_torso)
+        self.torso_move_srv = rospy.Service('move_torso', MoveTorso, self.move_torso_srv)
         self.client_torso.wait_for_server()
+
+    def move_torso_srv(self, req):
+        return self.move_torso(req.height)
          
-    def move_torso(self,req):
+    def move_torso(self,height):
         height = req.height
         goal = SingleJointPositionGoal(position=height,min_duration=rospy.Duration(3.0),max_velocity=0.05)
         self.client_torso.send_goal(goal)
