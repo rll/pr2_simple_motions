@@ -47,6 +47,11 @@ look_down: {arms: n, frame_left: torso_lift_link, frame_right: torso_lift_link, 
   pitch_left: 0, pitch_right: 0, roll_left: 0, roll_right: 0, set_head_angle: true,
   set_torso_height: false, torso_height: 0.0, x_left: 0, x_right: 0, y_left: 0, y_right: 0,
   yaw_left: 0, yaw_right: 0, z_left: 0, z_right: 0}
+look_down2: {arms: n, frame_left: torso_lift_link, frame_right: torso_lift_link, grip_left: false,
+  grip_right: false, head_pan: 1.0099940093951284e-05, head_tilt: 0.9,
+  pitch_left: 0, pitch_right: 0, roll_left: 0, roll_right: 0, set_head_angle: true,
+  set_torso_height: false, torso_height: 0.0, x_left: 0, x_right: 0, y_left: 0, y_right: 0,
+  yaw_left: 0, yaw_right: 0, z_left: 0, z_right: 0}
 off_table_left_down: {arms: b, frame_left: base_footprint, frame_right: base_footprint,
   grip_left: true, grip_right: true, head_pan: 0.0, head_tilt: 0.0, pitch_left: 0.33049826432519813,
   pitch_right: 1.1336803839435052, roll_left: 3.0030797071580091, roll_right: 1.6226263272567212,
