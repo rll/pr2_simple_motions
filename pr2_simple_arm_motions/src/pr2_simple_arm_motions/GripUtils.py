@@ -65,8 +65,7 @@ def grab(x,y,z,roll=pi/2,pitch=pi/4,yaw=0,frame="torso_lift_link",arm='l',link_f
     num_tries = 4
     if pitch==pi/2:
         num_tries = 5
-    while not has_obj:
-        
+    while not has_obj:        
         success = go_to(x=new_x,y=new_y,z=z+0.01*(1-sin(pitch)),roll=roll,pitch=pitch,yaw=yaw,grip=False,frame=frame,arm=arm,dur=3.0,link_frame=link_frame)
         #success = go_to(x=new_x,y=new_y,z=z+0.01*(1-sin(pitch))-0.005,roll=roll,pitch=pitch,yaw=yaw,grip=False,frame=frame,arm=arm,dur=3.0,link_frame=link_frame)
         #if not success:
@@ -239,9 +238,9 @@ def has_object(arm):
     if resp:
         #print "resp",resp.position
         if arm == 'l':
-            return -0.0012 < resp.position < 0.02 # adjust for thinner towel
+            return -0.0008 < resp.position < 0.02 # adjust for thinner towel
         else:
-            return -0.001 < resp.position < 0.02
+            return -0.0005 < resp.position < 0.02
     else:
         return False            
 
