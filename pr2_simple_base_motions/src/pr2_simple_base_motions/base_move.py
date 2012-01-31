@@ -48,8 +48,8 @@ class BaseMover:
         if start_srvs:
             self.base_move_srv = rospy.Service('move_base', MoveBase, self.move_base_srv)
             self.base_rotate_srv = rospy.Service('rotate_base', RotateBase, self.rotate_base)
+            self.set_pose_service = rospy.Service('set_pose', MoveBaseToPose, self.set_pose_srv)
         self.base_pub = rospy.Publisher("base_controller/command",Twist)
-        self.set_pose_service = rospy.Service('set_pose', MoveBaseToPose, self.set_pose_srv)
 
     def set_pose_srv(self, req):
         self.set_pose(req.target)
