@@ -17,7 +17,7 @@ import copy
 APPROACH_UP = 0.01
 APPROACH_BACK = 0.005
 #SCOOT_AMT = 0.015
-SCOOT_AMT = 0
+SCOOT_AMT = 0.015
 #INIT_SCOOT_AMT = 0.03
 
 global_listener = None
@@ -130,7 +130,7 @@ def go_to_multi (x_l,y_l,z_l,roll_l,pitch_l,yaw_l,grip_l,frame_l
                         ,link_frame_l=link_frame_l, link_frame_r=link_frame_r
                         ,dur=dur)
 
-SPEEDUP = 2.0
+SPEEDUP = 1.5
 
 #Move the gripper to a StampedPoint. Relies on the "move_one_arm" service
 #FIXME: should remap service name instead of hardcoding 
