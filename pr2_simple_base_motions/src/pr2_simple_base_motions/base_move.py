@@ -101,6 +101,10 @@ class BaseMover:
             self.base_pub.publish(command)
             rospy.sleep(0.01)
         self.base_pub.publish(Twist()) #Stops
+
+        # Try and prevent under-shooting
+        self.move_base(le[0], le[1])
+
         return True
         
     def goal_pose_displ(self,goal):
@@ -125,6 +129,14 @@ class BaseMover:
         self.move_base(req.x, req.y)
 
     def move_base(self,dx,dy):
+        EPS = 0.03
+
+        # Typically seems to under-shoot for smaller base movements
+        if abs(dx) <= 0.2:
+            dx += dx/abs(dx)*EPS
+        if abs(dy) <= 0.2:
+            dy += dy/abs(dy)*EPS
+
         rospy.loginfo("Received new base displacement request")                 
         kp = 0.7
         kd = 0
@@ -157,7 +169,7 @@ class BaseMover:
             prev_e_t = e_t
 
             print "Still have to go: ", e_t
-            if self.magnitude(e_t) < 0.03: #TODO: Tune this
+            if self.magnitude(e_t) < EPS:
                 break
             command = Twist()
             command.linear.x = p[0] + d[0] + i[0]
@@ -302,3 +314,4 @@ if __name__ == '__main__':
     try:
         main(args)
     except rospy.ROSInterruptException: pass
+
