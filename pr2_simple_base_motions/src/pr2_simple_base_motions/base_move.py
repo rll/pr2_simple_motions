@@ -157,7 +157,7 @@ class BaseMover:
             prev_e_t = e_t
 
             print "Still have to go: ", e_t
-            if self.magnitude(e_t) < 0.03:
+            if self.magnitude(e_t) < 0.03: #TODO: Tune this
                 break
             command = Twist()
             command.linear.x = p[0] + d[0] + i[0]
