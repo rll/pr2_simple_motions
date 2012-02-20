@@ -193,13 +193,17 @@ class BaseMover:
         y_comp = math.fabs((y/x)/math.sqrt(1+((y/x) ** 2))) * self.sign(y)
         return (x_comp, y_comp)
 
-    def rotate_base(self,req):
+    def rotate_base_srv(self, req):
+        self.move_base(req.yaw)
+
+    def rotate_base(yaw):
+
         #GOTTA TAKE SIGN OF TEH ANGLE INTO ACCOUNT!
-        while(req.yaw > math.pi):
-            req.yaw -= 2*math.pi
-        while(req.yaw <= -1*math.pi):
-            req.yaw += 2*math.pi
-        if req.yaw < 0:
+        while(yaw > math.pi):
+            yaw -= 2*math.pi
+        while(yaw <= -1*math.pi):
+            yaw += 2*math.pi
+        if yaw < 0:
             sign = -1
         else:
             sign = 1
@@ -211,7 +215,7 @@ class BaseMover:
 
         rospy.loginfo("Getting goal")
 
-        goal = self.rotate_goal(req.yaw)
+        goal = self.rotate_goal(yaw)
 
         rospy.loginfo("Got goal")
 
