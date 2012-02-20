@@ -33,7 +33,6 @@ class TorsoMover:
         return self.move_torso(req.height)
          
     def move_torso(self,height):
-        height = req.height
         goal = SingleJointPositionGoal(position=height,min_duration=rospy.Duration(3.0),max_velocity=0.05)
         self.client_torso.send_goal(goal)
         finished_within_time = self.client_torso.wait_for_result(rospy.Duration(50))

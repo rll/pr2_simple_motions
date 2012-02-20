@@ -132,9 +132,9 @@ class BaseMover:
         EPS = 0.03
 
         # Typically seems to under-shoot for smaller base movements
-        if abs(dx) <= 0.2:
+        if abs(dx) <= 0.2 and dx != 0:
             dx += dx/abs(dx)*EPS
-        if abs(dy) <= 0.2:
+        if abs(dy) <= 0.2 and dy != 0:
             dy += dy/abs(dy)*EPS
 
         rospy.loginfo("Received new base displacement request")                 

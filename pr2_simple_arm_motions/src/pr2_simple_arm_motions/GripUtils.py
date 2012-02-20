@@ -12,6 +12,7 @@ import tf
 import time
 import thread
 import copy
+import os
 
 #Hard voded variables for how to modify grip if you've failed to reach a grasp point
 APPROACH_UP = 0.01
@@ -227,6 +228,10 @@ def go_to_relative_multi(x_offset_l, y_offset_l, z_offset_l, grip_l, x_offset_r,
 #Checks if the gripper is holding an object. Uses the /has_object service, spawned by grip_watcher.py
 #FIXME: should remap service name instead of hardcoding    
 def has_object(arm):
+    # If in simulation always return true #FIXME perhaps later
+    if os.environ['ROBOT_MODE'] == 'sim':
+	return true
+
     resp = False
     try:
         get_joint = rospy.ServiceProxy("return_joint_state",ReturnJointState)
