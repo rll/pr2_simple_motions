@@ -243,7 +243,7 @@ def has_object(arm):
     if resp:
         #print "resp",resp.position
         if arm == 'l':
-            return -0.0008 < resp.position < 0.02 # adjust for thinner towel
+            return -0.0005 < resp.position < 0.02 # adjust for thinner towel
         else:
             return -0.0005 < resp.position < 0.02
     else:
