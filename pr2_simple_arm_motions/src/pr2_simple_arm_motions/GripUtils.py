@@ -39,7 +39,7 @@ def force_go_to_pt(point,roll,pitch,yaw,grip,arm,dur=5.0,x_offset=0.0,y_offset=0
     
 
 #Grab a 3D point with the gripper, iteratively increasing your approach til you've picked something up
-def grab_point(point,roll=pi/2,pitch=pi/4,yaw=0,arm='l',x_offset=0.0,y_offset=0.0,z_offset=0.02,link_frame='',approach=True,INIT_SCOOT_AMT=0.03):
+def grab_point(point,roll=pi/2,pitch=pi/4,yaw=0,arm='l',x_offset=0.0,y_offset=0.0,z_offset=0.0,link_frame='',approach=True,INIT_SCOOT_AMT=0.03):
     x = point.point.x + x_offset
     y = point.point.y + y_offset
     z = point.point.z + z_offset
@@ -230,7 +230,7 @@ def go_to_relative_multi(x_offset_l, y_offset_l, z_offset_l, grip_l, x_offset_r,
 def has_object(arm):
     # If in simulation always return true #FIXME perhaps later
     if os.environ['ROBOT_MODE'] == 'sim':
-	return true
+        return true
 
     resp = False
     try:
@@ -243,9 +243,9 @@ def has_object(arm):
     if resp:
         #print "resp",resp.position
         if arm == 'l':
-            return -0.0005 < resp.position < 0.02 # adjust for thinner towel
+            return -0.0009 < resp.position < 0.03 # adjust for thinner towel
         else:
-            return -0.0005 < resp.position < 0.02
+            return -0.001 < resp.position < 0.03
     else:
         return False            
 
