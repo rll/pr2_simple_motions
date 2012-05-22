@@ -242,10 +242,20 @@ def has_object(arm):
         return has_object(arm)
     if resp:
         #print "resp",resp.position
+        try:
+            l_has_obj_min = rospy.get_param('l_has_obj_min')
+            print 'l_has_obj_min: ', l_has_obj_min
+        except:
+            l_has_obj_min = -0.0015
+        try:
+            r_has_obj_min = rospy.get_param('r_has_obj_min')
+            print 'r_has_obj_min: ', r_has_obj_min
+        except:
+            r_has_obj_min = -0.0015
         if arm == 'l':
-            return -0.0009 < resp.position < 0.03 # adjust for thinner towel
+            return l_has_obj_min < resp.position < 0.03 # adjust for thinner towel
         else:
-            return -0.001 < resp.position < 0.03
+            return r_has_obj_min < resp.position < 0.03
     else:
         return False            
 
